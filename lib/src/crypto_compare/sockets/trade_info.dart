@@ -3,32 +3,30 @@ import 'package:crypto_exchange_runners/src/crypto_compare/sockets/socket.dart';
 
 class CCTradeInfoItem extends CCSocketItem {
 
+  static int SUBSCRIPTION_ID = 0;
+
   CCTradeInfoItem(List<CoinTradingPair> coinTradingPairs, Function callback(TradeInfo tradeInfo))
-      : super(coinTradingPairs, 0, callback);
+      : super(coinTradingPairs, SUBSCRIPTION_ID, callback);
 
   @override
   void parseFormattedExchangeDataList(List exchangeDataList) {
-    print(exchangeDataList);
-    try {
-      this.callback(new TradeInfo(
-          new CoinTradingPair(exchangeDataList[2], exchangeDataList[3], exchangeDataList[1]),
-          new DateTime.fromMillisecondsSinceEpoch(int.parse(exchangeDataList[6])),
-          double.parse(exchangeDataList[7]),
-          double.parse(exchangeDataList[9]),
-          int.parse(exchangeDataList[4])
-      )
-      );
-    } catch (e, stackTrace){
-      print(e);
-      print(stackTrace);
-    }
-
+    this.callback(new TradeInfo(
+        new CoinTradingPair(exchangeDataList[2], exchangeDataList[3], exchangeDataList[1]),
+        new DateTime.fromMillisecondsSinceEpoch(int.parse(exchangeDataList[6])),
+        double.parse(exchangeDataList[7]),
+        double.parse(exchangeDataList[9]),
+        int.parse(exchangeDataList[4])
+    )
+    );
   }
 }
 
 class CCTradeInfoAggItem extends CCBinaryMaskSocketItem {
+
+  static int SUBSCRIPTION_ID = 5;
+
   CCTradeInfoAggItem(List<CoinTradingPair> coinTradingPairs, Function callback(TradeInfo tradeInfo))
-      : super(coinTradingPairs, 5, CCBinaryMaskSocketItem.TRADE_DESIRED_FIELDS,callback){
+      : super(coinTradingPairs, SUBSCRIPTION_ID, CCBinaryMaskSocketItem.TRADE_DESIRED_FIELDS,callback){
   }
 
   @override

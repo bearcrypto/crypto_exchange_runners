@@ -22,4 +22,8 @@ abstract class CryptoExchangeRunner {
 
   void subscribeToTicker24Hour(List<CoinTradingPair> coinTradingPairs, callback(Ticker24Hour ticker24Hour));
 
+  void unsubscribeFromTradeInfo(List<CoinTradingPair> coinTradingPairs);
+
+  void unsubscribeFromTicker24Hour(List<CoinTradingPair> coinTradingPairs);
+
 }

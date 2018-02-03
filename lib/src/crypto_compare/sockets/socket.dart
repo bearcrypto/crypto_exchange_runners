@@ -18,15 +18,8 @@ abstract class CCSocketItem extends CryptoSocketIoRequestItem {
 
   @override
   SocketEndPoint getSocketEndPoint() {
-    Map<String, List<String>> subscriptionsMap = {'"subs"' : []};
-    coinTradingPairs.forEach((coinTradingPair){
-      if(this.subscriptionId == 5){
-        coinTradingPair.exchangeName = "CCCAGG";
-      }
-      subscriptionsMap['"subs"'].add('"${this.subscriptionId}~${coinTradingPair.exchangeName}~${coinTradingPair.baseCoinSymbol.toUpperCase()}~${coinTradingPair.quoteCoinSymbol.toUpperCase()}"');
-    });
-    String handshakeData = SocketIoRequestItem.formatAsEmit("SubAdd", subscriptionsMap);
-    return new SocketEndPoint("wss://streamer.cryptocompare.com/socket.io/?transport=websocket", handshakeData);
+    return new SocketEndPoint("wss://streamer.cryptocompare.com/socket.io/?transport=websocket",
+        getSubscriptionMessage(this.coinTradingPairs, this.subscriptionId, true));
   }
 
   @override
@@ -42,6 +35,16 @@ abstract class CCSocketItem extends CryptoSocketIoRequestItem {
 
   void parseFormattedExchangeDataList(List exchangeDataList);
 
+  static String getSubscriptionMessage(List<CoinTradingPair> coinTradingPairs, int subscriptionId, bool subscribe){
+    Map<String, List<String>> subscriptionsMap = {'"subs"' : []};
+    coinTradingPairs.forEach((coinTradingPair){
+      if(subscriptionId == 5){
+        coinTradingPair.exchangeName = "CCCAGG";
+      }
+      subscriptionsMap['"subs"'].add('"${subscriptionId}~${coinTradingPair.exchangeName}~${coinTradingPair.baseCoinSymbol.toUpperCase()}~${coinTradingPair.quoteCoinSymbol.toUpperCase()}"');
+    });
+    return SocketIoRequestItem.formatAsEmit(subscribe ? "SubAdd" : "SubRemove", subscriptionsMap);
+  }
 
 }
 
